@@ -1,4 +1,5 @@
-import axios, { AxiosResponse } from 'axios';
+// import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+import axios, { AxiosResponse, AxiosRequestConfig } from './axios';
 
 const baseURL = 'http://localhost:8080';
 
