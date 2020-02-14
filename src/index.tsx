@@ -1,20 +1,20 @@
 // import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import axios, { AxiosResponse, AxiosRequestConfig } from './axios';
+import axios, { AxiosResponse } from './axios';
 
 const baseURL = 'http://localhost:8080';
 
 export interface User {
-  usrname: string;
+  username: string;
   password: string;
 }
-const user:User= {
-  usrname: 'xiangju',
+const user: User= {
+  username: 'Stella',
   password: '123456',
 }
 axios({
   method: 'get',
   url: baseURL + '/get',
-  params: user
+  params: user,
 }).then((response: AxiosResponse) => {
   console.log(response);
   return response.data;
