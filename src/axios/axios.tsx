@@ -6,9 +6,10 @@ export default class Axios {
   request<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     return this.dispatchRequest(config);
   }
+  
   dispatchRequest<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     return new Promise<AxiosResponse<T>>((resolve, reject) => {
-      let { method, url, params } = config;
+      let { method, url, params, data, headers } = config;
       let request = new XMLHttpRequest();
       if (params && typeof params == 'object') {
         params = qs.stringify(params);
@@ -33,7 +34,10 @@ export default class Axios {
           }
         }
       }
-      request.send();
+      headers &&  Object.keys(headers).forEach(key => request.setRequestHeader(key, headers![key]));
+      let body: string | null = null;
+      if (data && typeof data === 'object') body = JSON.stringify(data);
+      request.send(body);
     })
   }
 }
