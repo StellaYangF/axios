@@ -9,13 +9,13 @@ export default class Axios {
 
   dispatchRequest<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     return new Promise<AxiosResponse<T>>((resolve, reject) => {
-      let { method, url, params, data, headers, timeout = 0 } = config;
+      let { method= 'get', url, params, data, headers, timeout = 0 } = config;
       let request = new XMLHttpRequest();
       if (params && typeof params == 'object') {
         params = qs.stringify(params);
-        url += ((url.indexOf('?') === -1 ? '?' : '&') + params);
+        url += ((url!.indexOf('?') === -1 ? '?' : '&') + params);
       }
-      request.open(method, url, true);
+      request.open(method, url!, true);
       request.responseType = 'json';
       request.onreadystatechange = function () {
         if (request.readyState === 4 && request.status !== 0) {
@@ -47,7 +47,7 @@ export default class Axios {
        */
 
       request.onerror = function() {
-        reject(new Error(`Network Error`));
+        reject(new Error(`net::ERR_INTERNET_DISCONNECTED`));
       }
 
       if (timeout) {

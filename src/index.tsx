@@ -1,5 +1,8 @@
 // import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import axios, { AxiosResponse } from './axios';
+import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+import { configure } from '@testing-library/react';
+import { url } from 'inspector';
+// import { AxiosRequestConfig } from './axios';
 
 const baseURL = 'http://localhost:8080';
 
@@ -19,6 +22,9 @@ const user: User = {
 //   params: user,
 // })
 
+/**
+ ***************** handle errors
+ *
 // setTimeout(() => {
   axios({
     method: 'POST',
@@ -42,3 +48,59 @@ const user: User = {
       console.log(err);
     })
 // }, 5000);
+*/
+
+/**
+ * ********** interceptors
+ */
+console.time('const');
+// 请求拦截器 先进后出
+axios.interceptors.request.use((config: AxiosRequestConfig): AxiosRequestConfig => {
+  config.headers!.name += '1';
+  console.timeEnd('const');
+  return config;
+})
+let request = axios.interceptors.request.use((config: AxiosRequestConfig): AxiosRequestConfig => {
+  config.headers!.name += '2';
+  return config;
+})
+axios.interceptors.request.use((config: AxiosRequestConfig): AxiosRequestConfig | Promise<AxiosRequestConfig> => {
+  // config.headers!.name += '3';
+  // return new Promise(resolve => {
+  //   setTimeout(() => {
+  //     config.headers.name += '3';
+  //     resolve(config);
+  //   }, 3000);
+  // })
+  return Promise.reject('出错了');
+})
+axios.interceptors.request.eject(request);
+
+axios.interceptors.response.use((response: AxiosResponse): AxiosResponse => {
+  response.data.username += '1';
+  return response;
+}, err => Promise.reject(err));
+let response = axios.interceptors.response.use((response: AxiosResponse): AxiosResponse => {
+  response.data.username += '2';
+  return response;
+})
+axios.interceptors.response.use((response: AxiosResponse): AxiosResponse => {
+  response.data.username += '3';
+  return response;
+})
+axios.interceptors.response.eject(response);
+
+
+axios({
+  method: 'post',
+  url: baseURL + '/post',
+  headers: {
+    'name': 'stella',
+    'content-type': 'application/json',
+  },
+  timeout: 1000,
+  data: user
+}).then((response: AxiosResponse) => {
+  console.log(response);
+  console.log(response.data);
+}).catch(console.log);
