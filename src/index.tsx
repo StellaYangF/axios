@@ -1,5 +1,5 @@
 // import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import axios, { AxiosResponse } from './axios';
+import axios, { AxiosResponse } from './axios1';
 
 const baseURL = 'http://localhost:8080';
 
@@ -15,7 +15,7 @@ axios({
   method: 'get',
   url: baseURL + '/get',
   params: user,
-}).then((response: AxiosResponse) => {
+}).then((response: AxiosResponse<User>) => {
   console.log(response);
   return response.data;
 }).then((data: User) => {
