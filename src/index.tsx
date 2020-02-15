@@ -19,21 +19,26 @@ const user: User = {
 //   params: user,
 // })
 
-axios<User>({
-  method: 'POST',
-  url: baseURL + '/post',
-  headers: {
-    'Content-TYpe': 'application/json'
-  },
-  data: user,
-})
-  .then((response: AxiosResponse<User>) => {
-    console.log(response);
-    return response.data;
+// setTimeout(() => {
+  axios({
+    method: 'POST',
+    // url: baseURL + '/post',
+    // url: baseURL + '/post_timeout?timeout=3000', // 超时错误
+    url: baseURL + '/post_status?code=300', // 状态码错误
+    headers: {
+      'Content-TYpe': 'application/json'
+    },
+    data: user,
+    // timeout: 500,
   })
-  .then((data: User) => {
-    console.log(data);
-  })
-  .catch((err: any) => {
-    console.log(err);
-  })
+    .then((response: AxiosResponse<User>) => {
+      console.log(response);
+      return response.data;
+    })
+    .then((data: User) => {
+      console.log(data);
+    })
+    .catch((err: any) => {
+      console.log(err);
+    })
+// }, 5000);
