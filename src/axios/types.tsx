@@ -1,4 +1,4 @@
-import { AxiosInterceptorManager } from "./AxiosInterceptorManager";
+import { Interceptors } from "./AxiosInterceptorManager";
 
 export type Methods = 'get' | 'GET' | 'post' | 'POST' | 'put' | 'PUT'|'delete' |'DELETE' | 'options' | 'OPTIONS';
 
@@ -27,9 +27,6 @@ export interface AxiosResponse<T = any> {
 
 // T表示promise变成功态的resolve的值resolve(value)
 export interface AxiosInstance {
-  <T = any>(config: AxiosRequestConfig): Promise<AxiosResponse<T>>;
-  interceptors: {
-    request: AxiosInterceptorManager<AxiosRequestConfig>;
-    response: AxiosInterceptorManager<AxiosResponse>;
-  }
+  <T = any>(config: AxiosRequestConfig): Promise<AxiosResponse<T>>
+  interceptors: Interceptors
 }

@@ -1,10 +1,34 @@
 import { AxiosRequestConfig, AxiosResponse } from './types';
+import AxiosInterceptorManager, { Interceptor, Interceptors } from './AxiosInterceptorManager';
 import qs from 'qs';
 import parseHeaders from 'parse-headers';
 
 export default class Axios {
-  request<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
-    return this.dispatchRequest(config);
+  public interceptors: Interceptors = {
+    request: new AxiosInterceptorManager<AxiosRequestConfig>(),
+    response: new AxiosInterceptorManager<AxiosResponse>(),
+  }
+
+  request<T>(config: AxiosRequestConfig): Promise<AxiosRequestConfig | AxiosResponse<T>> {
+    let chain: Interceptor[] = [{
+      onFulfilled: this.dispatchRequest,
+      onRejected: undefined,
+    }]
+    this.interceptors.request.interceptors.forEach(interceptor => {
+      interceptor && chain.unshift(interceptor);
+    })
+    this.interceptors.response.interceptors.forEach(interceptor => {
+      interceptor && chain.push(interceptor);
+    })
+
+    let promise = Promise.resolve(config);
+
+    while (chain.length) {
+      let { onFulfilled, onRejected } = chain.shift()!;
+      promise = promise.then(onFulfilled, onRejected);
+    }
+    
+    return promise;
   }
 
   dispatchRequest<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {

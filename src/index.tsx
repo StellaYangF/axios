@@ -1,7 +1,5 @@
 // import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { configure } from '@testing-library/react';
-import { url } from 'inspector';
+import axios, { AxiosResponse, AxiosRequestConfig } from './axios';
 // import { AxiosRequestConfig } from './axios';
 
 const baseURL = 'http://localhost:8080';
@@ -66,13 +64,13 @@ let request = axios.interceptors.request.use((config: AxiosRequestConfig): Axios
 })
 axios.interceptors.request.use((config: AxiosRequestConfig): AxiosRequestConfig | Promise<AxiosRequestConfig> => {
   // config.headers!.name += '3';
-  // return new Promise(resolve => {
-  //   setTimeout(() => {
-  //     config.headers.name += '3';
-  //     resolve(config);
-  //   }, 3000);
-  // })
-  return Promise.reject('出错了');
+  return new Promise(resolve => {
+    setTimeout(() => {
+      config.headers!.name += '3';
+      resolve(config);
+    }, 3000);
+  })
+  // return Promise.reject('出错了');
 })
 axios.interceptors.request.eject(request);
 
