@@ -1,6 +1,6 @@
 import { Interceptors } from "./AxiosInterceptorManager";
 
-export type Methods = 'get' | 'GET' | 'post' | 'POST' | 'put' | 'PUT'|'delete' |'DELETE' | 'options' | 'OPTIONS';
+export type Methods = 'get' | 'GET' | 'post' | 'POST' | 'put' | 'PUT'|'delete' |'DELETE' | 'options' | 'OPTIONS' | 'patch' | 'PATCH';
 
 // interface PlainObject {
 //   [name: string]: any

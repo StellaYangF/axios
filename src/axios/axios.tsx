@@ -3,14 +3,34 @@ import AxiosInterceptorManager, { Interceptor, Interceptors } from './AxiosInter
 import qs from 'qs';
 import parseHeaders from 'parse-headers';
 
-export default class Axios {
+const defaults: AxiosRequestConfig = {
+  method: 'get',
+  timeout: 0,
+  headers: {
+    common: { // 针对所有的请求生效
+      accept: 'application/json', // 指定服务器返回 JSON 格式的数据
+    },
+    name: 'Stella'
+  }
+}
+
+let getStyleMethods = ['get', 'head', 'delete', 'options'];
+let postStyleMethods = ['put', 'post', 'patch'];
+getStyleMethods.forEach((method: string) => (defaults.headers![method] = {}));
+postStyleMethods.forEach((method: string) => (defaults.headers![method] = { 'Content-Type': 'application/json' }));
+const allMethods = [...getStyleMethods, ...postStyleMethods];
+
+export default class Axios<T> {
+  public defaults: AxiosRequestConfig = defaults;
   public interceptors: Interceptors = {
     request: new AxiosInterceptorManager<AxiosRequestConfig>(),
-    response: new AxiosInterceptorManager<AxiosResponse>(),
+    response: new AxiosInterceptorManager<AxiosResponse<T>>(),
   }
 
   request<T>(config: AxiosRequestConfig): Promise<AxiosRequestConfig | AxiosResponse<T>> {
-    let chain: Interceptor[] = [{
+    config.headers = Object.assign(this.defaults.headers, config.headers);
+    console.log(config);
+    const chain: Interceptor[] = [{
       onFulfilled: this.dispatchRequest,
       onRejected: undefined,
     }]
@@ -59,7 +79,23 @@ export default class Axios {
         }
       }
       //  POST method
-      headers && Object.keys(headers).forEach(key => request.setRequestHeader(key, headers![key]));
+      // headers && Object.keys(headers).forEach(key => request.setRequestHeader(key, headers![key]));
+      if (headers) {
+        // headers:
+        //   common: {accept: "application/json"}
+        //   get: {}
+        //   head: {}
+        //   delete: {}
+        //   options: {}
+        //   put: {Content-Type: "application/json"}
+        //   post: {Content-Type: "application/json"}
+        //   patch: {Content-Type: "application/json"}
+        Object.keys(headers).forEach(key => {
+          if (key === 'common' || allMethods.includes(key)) {
+            for (let key2 in headers![key]) request.setRequestHeader(key2, headers![key][key2]);
+          } else request.setRequestHeader(key, headers![key]);
+        })
+      }
       let body: string | null = null;
       if (data && typeof data === 'object') body = JSON.stringify(data);
 

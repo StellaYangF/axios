@@ -50,7 +50,7 @@ const user: User = {
 
 /**
  * ********** interceptors
- */
+ 
 console.time('const');
 // 请求拦截器 先进后出
 axios.interceptors.request.use((config: AxiosRequestConfig): AxiosRequestConfig => {
@@ -87,15 +87,11 @@ axios.interceptors.response.use((response: AxiosResponse): AxiosResponse => {
   return response;
 })
 axios.interceptors.response.eject(response);
+*/
 
-
-axios({
+axios<User>({
   method: 'post',
   url: baseURL + '/post',
-  headers: {
-    'name': 'stella',
-    'content-type': 'application/json',
-  },
   timeout: 1000,
   data: user
 }).then((response: AxiosResponse) => {
