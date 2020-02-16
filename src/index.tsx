@@ -1,5 +1,5 @@
 // import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import axios, { AxiosResponse, AxiosRequestConfig } from './axios';
+import axios, { AxiosResponse } from './axios';
 // import { AxiosRequestConfig } from './axios';
 
 const baseURL = 'http://localhost:8080';
@@ -93,8 +93,13 @@ axios<User>({
   method: 'post',
   url: baseURL + '/post',
   timeout: 1000,
-  data: user
+  data: user,
+  transformRequest(data: User, headers) {
+    return data;
+  },
+  transformResponse(response: AxiosResponse<User>): User {
+    return response.data;
+  }
 }).then((response: AxiosResponse) => {
   console.log(response);
-  console.log(response.data);
 }).catch(console.log);

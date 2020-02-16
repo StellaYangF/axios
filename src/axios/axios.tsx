@@ -3,14 +3,15 @@ import AxiosInterceptorManager, { Interceptor, Interceptors } from './AxiosInter
 import qs from 'qs';
 import parseHeaders from 'parse-headers';
 
+// merge options
 const defaults: AxiosRequestConfig = {
   method: 'get',
   timeout: 0,
   headers: {
     common: { // 针对所有的请求生效
       accept: 'application/json', // 指定服务器返回 JSON 格式的数据
+      name: 'Stella'
     },
-    name: 'Stella'
   }
 }
 
@@ -29,7 +30,9 @@ export default class Axios<T> {
 
   request<T>(config: AxiosRequestConfig): Promise<AxiosRequestConfig | AxiosResponse<T>> {
     config.headers = Object.assign(this.defaults.headers, config.headers);
-    console.log(config);
+    if (config.transformRequest && config.data) {
+      config.data = config.transformRequest(config.data, config.headers);
+    }
     const chain: Interceptor[] = [{
       onFulfilled: this.dispatchRequest,
       onRejected: undefined,
@@ -72,6 +75,9 @@ export default class Axios<T> {
               config,
               request,
             }
+            if (config.transformResponse) {
+              response = config.transformResponse(response);
+            }
             resolve(response);
           } else {
             reject(new Error(`Request failed with status code ${request.status}`));
@@ -92,13 +98,17 @@ export default class Axios<T> {
         //   patch: {Content-Type: "application/json"}
         Object.keys(headers).forEach(key => {
           if (key === 'common' || allMethods.includes(key)) {
-            for (let key2 in headers![key]) request.setRequestHeader(key2, headers![key][key2]);
+            if (key === 'common' || key === config.method) {
+              for (let key2 in headers![key]) request.setRequestHeader(key2, headers![key][key2]);
+            }
           } else request.setRequestHeader(key, headers![key]);
         })
       }
       let body: string | null = null;
-      if (data && typeof data === 'object') body = JSON.stringify(data);
-
+      if (data) {
+        if (typeof data === 'object') body = JSON.stringify(data);
+        else if (typeof data === 'string') body = data;
+      } 
       /**
        * 错误处理
        *  - 网络异常 request.onerror
