@@ -21,4 +21,5 @@ axios({
     let msg: string =  axios.isCancel(error) ? '请求取消': 'error';
     console.log(msg, error);
 })
+
 source.cancel('用户取消请求');
