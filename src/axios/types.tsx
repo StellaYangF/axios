@@ -37,4 +37,5 @@ export interface AxiosInstance {
   defaults: AxiosRequestConfig;
   CancelToken: CancelToken;
   isCancel(value: any): boolean;
+  get<T, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R>
 }

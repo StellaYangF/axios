@@ -138,4 +138,9 @@ export default class Axios<T> {
       request.send(body);
     })
   }
+
+  get<T, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<AxiosRequestConfig | R> {
+    config = {...config, url}
+    return this.request<T>(config!);
+  }
 }
