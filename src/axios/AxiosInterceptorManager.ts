@@ -15,7 +15,7 @@ export interface Interceptor<T = any> {
 export interface Interceptors {
     request: AxiosInterceptorManager<AxiosRequestConfig>
     response: AxiosInterceptorManager<AxiosResponse>
-  }
+}
 
 export default class AxiosInterceptorManager<T> {
     public interceptors: Array<Interceptor<T> | null> = []

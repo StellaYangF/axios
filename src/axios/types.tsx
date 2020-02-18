@@ -18,7 +18,7 @@ export interface AxiosRequestConfig {
   timeout?: number;
   transformRequest?: (data:any, headers: any) => any;
   transformResponse?: (data: any) => any;
-  cancelToken?: Promise<any>;                                                                                                                                                                                                                                                          
+  cancelToken?: Promise<any>; 
 }
 
 export interface AxiosResponse<T = any> {

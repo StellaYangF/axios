@@ -64,7 +64,7 @@ export default class Axios<T> {
       }
       request.open(method, url!, true);
       request.responseType = 'json';
-      request.onreadystatechange = function () {
+      request.onreadystatechange = function () { // h5 API request.onload readystate = 4 status = 200
         if (request.readyState === 4 && request.status !== 0) {
           if (request.status >= 200 && request.status < 300) {
             let response: AxiosResponse<T> = {
